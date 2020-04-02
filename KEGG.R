@@ -18,20 +18,8 @@
   
   #Hacemos el merge
   
-  Males<-merge(Males_lesional_Norm_filter, Males_psoriasis_Norm_filter, by= "UCSC_RefGene_Name")
-  #calculamos la media de los Hombres
-  Males$adj.P.Val.Mean<-(Males$adj.Pval_mean.x + Males$adj.Pval_mean.y)/2 
-  Males$LogFC.Mean<-(Males$LogFC_mean.x+Males$LogFC_mean.y)/2
-  Males<-Males[, c(1,6,7)] #filtramos las columnas con las medias
-  
-  
-  
-  
-  Females<-merge(Females_lesional_Norm_filter, Females_psoriasis_Norm_filter, by= "UCSC_RefGene_Name")
-  #calculamos la media de las Mujeres
-  Females$adj.P.Val.Mean<-(Females$adj.Pval_mean.x + Females$adj.Pval_mean.y)/2
-  Females$LogFC.Mean<-(Females$LogFC_mean.x+Females$LogFC_mean.y)/2
-  Females<-Females[, c(1,6,7)] #filtramos las columnas con las medias
+  Males<-mergeData(Males_lesional_Norm_filter, Males_psoriasis_Norm_filter)
+  Females<-mergeData(Females_lesional_Norm_filter, Females_psoriasis_Norm_filter)
   
   ############## Merge de ambos sexos y los exclusivos de cada sexo
   
