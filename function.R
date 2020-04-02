@@ -47,4 +47,26 @@ getKeggMaps <- function() {
   Identifier <- as.list(KEGGPATHNAME2ID)
   Description<-names(Identifier)
   maps<-cbind(Description,  paste0(Identifier))
+  rutas<-as.data.frame(rutas, stringsAsFactors = FALSE)
+  rutas[, c(2:5)]<-sapply(rutas[, c(2:5)], as.numeric)
+  pathways<-as.data.frame(pathways, stringsAsFactors = FALSE)
+  maps<-as.data.frame(maps)
+}
+
+getOverlap <- function(gene) {
+  enrichr2<-enrichr(gene, databases ="KEGG_2019_Human") #enrichment igual a enrichr
+  #Hacer la tabla tipo enrichR
+  Num_genes<-str_count(enrichr2$KEGG_2019_Human$Genes, ";")+1
+  Term<-enrichr2$KEGG_2019_Human$Term
+  Adjusted.P.value <- enrichr2$KEGG_2019_Human$Adjusted.P.value
+  Odds.Ratio<-enrichr2$KEGG_2019_Human$Odds.Ratio
+  Combined.Score<-enrichr2$KEGG_2019_Human$Combined.Score
+  Overlap<-enrichr2$KEGG_2019_Human$Overlap
+}
+
+getRutas <- function(Overlap) {
+  rutas<-cbind(Term,Adjusted.P.value ,Odds.Ratio ,Combined.Score,  Num_genes ,Overlap)
+  rutas<-as.data.frame(rutas, stringsAsFactors = FALSE)
+  rutas[, c(2:5)]<-sapply(rutas[, c(2:5)], as.numeric)
+  rutas<-subset(rutas, rutas$Adjusted.P.value<0.05)#filtro de rutas significativos
 }
