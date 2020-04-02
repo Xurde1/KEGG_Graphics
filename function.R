@@ -18,3 +18,33 @@ mergeData <- function(lesional_Norm_filter, psoriasis_Norm_filter) {
   Gender$LogFC.Mean<-(Gender$LogFC_mean.x+Gender$LogFC_mean.y)/2
   Gender<-Gender[, c(1,6,7)] #filtramos las columnas con las medias
 }
+
+generateBoth <- function(Females, Males) {
+  Both<-merge(Females, Males, by= "UCSC_RefGene_Name") #comunes hombre y mujeres
+  Both$LogFC_Mean<-(Both$LogFC.Mean.x + Both$LogFC.Mean.y)/2
+  Both$adj.P.Val_Mean<-(Both$adj.P.Val.Mean.x+Both$adj.P.Val.Mean.y)/2
+  Both<-Both[, c(1,6,7)]
+}
+
+generateDataGene <- function(){
+  library(annotables)
+  data_gene <- grch38[grch38[, "biotype"]=="protein_coding", ] #obtenemos los datos de la base de datos, para cada gen del genoma
+  data_gene<- distinct(data_gene, entrez, .keep_all = TRUE)# filtramos duplicados
+}
+
+getKeggMaps <- function() {
+  library(enrichR)
+  library(stringr)
+  library(KEGGREST)
+  library(KEGG.db)
+  pathways.list<-keggList("pathway", "hsa")
+  head(pathways.list)
+  names <- substr(names(pathways.list), 6,13)
+  terms<-str_remove(pathways.list, pattern = " - Homo sapiens (human)")
+  terms<-gsub('.{23}$', "", terms)
+  pathways<-cbind(names, terms)
+  #obtengp los identificadores map
+  Identifier <- as.list(KEGGPATHNAME2ID)
+  Description<-names(Identifier)
+  maps<-cbind(Description,  paste0(Identifier))
+}

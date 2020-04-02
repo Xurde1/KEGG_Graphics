@@ -5,7 +5,6 @@
   setwd("~/Proyectos/Carmen/KEGG")
   library(openxlsx)
   library(dplyr)
-  
   source("Code/KEGG_Graphics/function.R")
   datos<-"Input/methylation.xlsx" #excel con los datos
   
@@ -13,33 +12,22 @@
   Males_psoriasis_Norm_filter <- preparateData(datos,"Males GSE63315" )
   Females_lesional_Norm_filter <- preparateData(datos,"Females les GSE115797")
   Females_psoriasis_Norm_filter <- preparateData(datos,"Females GSE63315" )
-  
-  
-  
-  #Hacemos el merge
+
+      #Hacemos el merge
   
   Males<-mergeData(Males_lesional_Norm_filter, Males_psoriasis_Norm_filter)
   Females<-mergeData(Females_lesional_Norm_filter, Females_psoriasis_Norm_filter)
   
   ############## Merge de ambos sexos y los exclusivos de cada sexo
-  
-  Both<-merge(Females, Males, by= "UCSC_RefGene_Name") #comunes hombre y mujeres
-  Both$LogFC_Mean<-(Both$LogFC.Mean.x + Both$LogFC.Mean.y)/2
-  Both$adj.P.Val_Mean<-(Both$adj.P.Val.Mean.x+Both$adj.P.Val.Mean.y)/2
-  Both<-Both[, c(1,6,7)]
-  
-  
+  Both<-generateBoth(Females, Males)
   unique_male<-anti_join(Males, Both, By = "UCSC_RefGene_Name") #exclusivos de hombres
-  
   unique_female<-anti_join(Females, Both, By = "UCSC_RefGene_Name") #exclusivos de mujere
   ########################################### Aqui ya tenemos los datos preparados ##########################################################
   
   ####################################################Enrichment KEGG para el data frame Both ################################################
-  library(annotables)
-  data_gene <- grch38[grch38[, "biotype"]=="protein_coding", ] #obtenemos los datos de la base de datos, para cada gen del genoma
-  data_gene<- distinct(data_gene, entrez, .keep_all = TRUE)# filtramos duplicados
-  Both2<-merge(data_gene, Both, by.x="symbol", by.y="UCSC_RefGene_Name" ) #obtenemos los datos de los genes con ID enterz
+  data_gene <- generateDataGene()
   
+  Both2<-merge(data_gene, Both, by.x="symbol", by.y="UCSC_RefGene_Name" ) #obtenemos los datos de los genes con ID enterz
   gene<- as.vector(Both2$symbol)
   
   library(enrichR)
@@ -62,18 +50,7 @@
   head(rutas)
   ####################################### combinamos con los identificadores KEGG ############################################################
   #obtengo toda la lista de rutas KEGG con sus identificadores
-  pathways.list<-keggList("pathway", "hsa")
-  head(pathways.list)
-  names <- substr(names(pathways.list), 6,13)
-  terms<-str_remove(pathways.list, pattern = " - Homo sapiens (human)")
-  terms<-gsub('.{23}$', "", terms)
-  pathways<-cbind(names, terms)
-  #obtengp los identificadores map
-  
-  library(KEGG.db)
-  Identifier <- as.list(KEGGPATHNAME2ID)
-  Description<-names(Identifier)
-  maps<-cbind(Description,  paste0(Identifier))
+  maps <- getKeggMaps()
   
   rutas<-as.data.frame(rutas, stringsAsFactors = FALSE)
   rutas[, c(2:5)]<-sapply(rutas[, c(2:5)], as.numeric)
