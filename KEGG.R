@@ -6,7 +6,7 @@
   library(openxlsx)
   library(dplyr)
   
-  datos<-"Results methylation general .xlsx" #excel con los datos
+  datos<-"Proyectos/Carmen/KEGG/Input/Results methylation general .xlsx" #excel con los datos
   
   Males_lesional<-read.xlsx(datos, sheet = "Males GSE115797", skipEmptyRows = TRUE)# hoja Males_GSE115797
   Males_lesional<-na.omit(Males_lesional, cols= "UCSC_RefGene_Name") #eliminamos las filas sin gen
@@ -163,6 +163,26 @@
                      kegg.native = FALSE, sign.pos = position_sig)
   #result PDF file in current directory
   head(rutas_identificadas)
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   ############################################################################################################################################
   ####################################################Enrichment KEGG para el data frame Male ################################################
   Males2<-merge(data_gene, unique_male, by.x="symbol", by.y="UCSC_RefGene_Name" ) #obtenemos los datos de los genes con ID enterz
