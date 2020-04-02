@@ -2,48 +2,19 @@
   
   ######################################## Preparacion de los datos ########################################################################
   #cargar los datos
-  
+  setwd("~/Proyectos/Carmen/KEGG")
   library(openxlsx)
   library(dplyr)
   
-  datos<-"Proyectos/Carmen/KEGG/Input/Results methylation general .xlsx" #excel con los datos
+  source("Code/KEGG_Graphics/function.R")
+  datos<-"Input/methylation.xlsx" #excel con los datos
   
-  Males_lesional<-read.xlsx(datos, sheet = "Males GSE115797", skipEmptyRows = TRUE)# hoja Males_GSE115797
-  Males_lesional<-na.omit(Males_lesional, cols= "UCSC_RefGene_Name") #eliminamos las filas sin gen
-  Males_lesional<-subset(Males_lesional, Males_lesional$adj.P.Val<0.05) #filtramos solo los significativos
-  Males_lesional_Norm<-scale(Males_lesional[, 2:3]) #Normalizamos enre 0 y 1
-  Males_lesional_Norm<-cbind(Males_lesional[, c(1,4)], Males_lesional_Norm) # unimos los datos
-  Males_lesional_Norm1<-Males_lesional_Norm %>% group_by(UCSC_RefGene_Name) %>% summarize(LogFC_mean= mean(logFC))
-  Males_lesional_Norm2<-Males_lesional_Norm %>% group_by(UCSC_RefGene_Name)%>% summarize(adj.Pval_mean= mean(adj.P.Val))
-  Males_lesional_Norm_filter<-cbind( Males_lesional_Norm1[, c(1,2)], Males_lesional_Norm2[, 2]) # unimos los datos
+  Males_lesional_Norm_filter <- preparateData(datos,"Males GSE115797" )
+  Males_psoriasis_Norm_filter <- preparateData(datos,"Males GSE63315" )
+  Females_lesional_Norm_filter <- preparateData(datos,"Females les GSE115797")
+  Females_psoriasis_Norm_filter <- preparateData(datos,"Females GSE63315" )
   
   
-  Males_psoriasis<-read.xlsx(datos, sheet ="Males GSE63315")# hoja Males_GSE63315
-  Males_psoriasis<-na.omit(Males_psoriasis, cols= "UCSC_RefGene_Name")
-  Males_psoriasis<-subset(Males_psoriasis, Males_psoriasis$adj.P.Val<0.05)
-  Males_psoriasis_Norm<-scale(Males_psoriasis[, 2:3])
-  Males_psoriasis_Norm<-cbind(Males_psoriasis[, c(1,4)], Males_psoriasis_Norm)
-  Males_psoriasis_Norm1<-Males_psoriasis_Norm %>% group_by(UCSC_RefGene_Name) %>% summarize(LogFC_mean= mean(logFC))
-  Males_psoriasis_Norm2<-Males_psoriasis_Norm %>% group_by(UCSC_RefGene_Name)%>% summarize(adj.Pval_mean= mean(adj.P.Val))
-  Males_psoriasis_Norm_filter<-cbind( Males_psoriasis_Norm1[, c(1,2)], Males_psoriasis_Norm2[, 2]) # unimos los datos
-  
-  Females_lesional<-read.xlsx(datos, sheet ="Females les GSE115797") #hoja Females_GSE115797
-  Females_lesional<-na.omit(Females_lesional, cols= "UCSC_RefGene_Name")
-  Females_lesional<-subset(Females_lesional, Females_lesional$adj.P.Val<0.05)
-  Females_lesional_Norm<-scale(Females_lesional[, 2:3])
-  Females_lesional_Norm<-cbind(Females_lesional[, c(1,4)], Females_lesional_Norm)
-  Females_lesional_Norm1<-Females_lesional_Norm %>% group_by(UCSC_RefGene_Name) %>% summarize(LogFC_mean= mean(logFC))
-  Females_lesional_Norm2<-Females_lesional_Norm %>% group_by(UCSC_RefGene_Name)%>% summarize(adj.Pval_mean= mean(adj.P.Val))
-  Females_lesional_Norm_filter<-cbind( Females_lesional_Norm1[, c(1,2)], Females_lesional_Norm2[, 2]) # unimos los datos
-  
-  Females_psoriasis<-read.xlsx(datos, sheet ="Females GSE63315") #hoja Females_GSE63315
-  Females_psoriasis<-na.omit(Females_psoriasis, cols= "UCSC_RefGene_Name")
-  Females_psoriasis<-subset(Females_psoriasis, Females_psoriasis$adj.P.Val<0.05)#filtro se genes significativos
-  Females_psoriasis_Norm<-scale(Females_psoriasis[, 2:3])
-  Females_psoriasis_Norm<-cbind(Females_psoriasis[, c(1,4)], Females_psoriasis_Norm)
-  Females_psoriasis_Norm1<-Females_psoriasis_Norm %>% group_by(UCSC_RefGene_Name) %>% summarize(LogFC_mean= mean(logFC))
-  Females_psoriasis_Norm2<-Females_psoriasis_Norm %>% group_by(UCSC_RefGene_Name)%>% summarize(adj.Pval_mean= mean(adj.P.Val))
-  Females_psoriasis_Norm_filter<-cbind(Females_psoriasis_Norm1[, c(1,2)], Females_psoriasis_Norm2[, 2]) # unimos los datos
   
   #Hacemos el merge
   
