@@ -28,7 +28,6 @@
   unique_male<-anti_join(Males, Both, By = "UCSC_RefGene_Name") #exclusivos de hombres
   unique_female<-anti_join(Females, Both, By = "UCSC_RefGene_Name") #exclusivos de mujere
   ########################################### Aqui ya tenemos los datos preparados ##########################################################
-  
   ####################################################Enrichment KEGG para el data frame Both ################################################
   data_gene <- generateDataGene()
   setwd("Results/")

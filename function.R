@@ -84,12 +84,15 @@ getRutasIdentificadas <- function (rutas, pathways){
   rutas_identificadas<-rutas_identificadas[order(rutas_identificadas$Adjusted.P.value),]
 }
 
-loadData <- function(rutas_identificadas, Both2){
+getDatosRepresentar <- function( Both2){
   enterz_name<-Both2[,3]
   rownames(Both2)<-enterz_name
   datos<-Both2[, c(10)]
   names(datos)<-enterz_name
-  ##CAMBIADO ORDEN
+  datos
+}
+
+getRutasRepresentar <- function(rutas_identificadas){
   rutas_representar<-5
   rutas_representar<-head(rutas_identificadas$Identifier)
 }
@@ -125,7 +128,8 @@ executeKeggGraphic<- function(data_gene, Both, nombre_graficos){
   ###########################################################################################################################################
   ####################################### Generacion de los graficos KEGG ###################################################################
   #load data
-  rutas_representar<-loadData(rutas_identificadas, Both2)
+  rutas_representar<-getRutasRepresentar(rutas_identificadas)
+  datos<-getDatosRepresentar(Both2)
   #KEGG view: gene data only
   pv.out <- getKeggView(datos, rutas_representar, nombre_graficos )
   str(pv.out)
