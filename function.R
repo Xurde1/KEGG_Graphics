@@ -63,7 +63,7 @@ getRutas <- function(gene) {
   rutas<-subset(rutas, rutas$Adjusted.P.value<0.05)#filtro de rutas significativos
 }
 
-getMapsWithIdentifiers <- function(rutas, pathways){
+getMapsWithIdentifiers <- function(rutas, pathways, maps){
   rutas<-as.data.frame(rutas, stringsAsFactors = FALSE)
   rutas[, c(2:5)]<-sapply(rutas[, c(2:5)], as.numeric)
   pathways<-as.data.frame(pathways, stringsAsFactors = FALSE)
@@ -120,7 +120,7 @@ executeKeggGraphic<- function(data_gene, Both, nombre_graficos){
   head(rutas)
   
   #tabla para hacer los graficos, de ella se obtienen los identificadores de rutas KEGG
-  maps <- getMapsWithIdentifiers(rutas, pathways)
+  maps <- getMapsWithIdentifiers(rutas, pathways, maps)
   rutas_identificadas_map <- getRutasIdentificadasMap(rutas, maps)
   rutas_identificadas <- getRutasIdentificadas(rutas, pathways)
   names(rutas_identificadas)[names(rutas_identificadas) == "names"]<-"Identifier"
